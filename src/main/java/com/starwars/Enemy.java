@@ -2,6 +2,7 @@ package com.starwars;
 
 public class Enemy {
     protected int id;
+    protected String name;
     protected int health;
     protected int maxHealth;
     protected int defence;
@@ -9,6 +10,7 @@ public class Enemy {
     protected int maxMana;
     protected int speed;
     protected int DoT;  //danno 5 nel tempo
+    protected boolean key;
 
     public int getHealth() {
         return health;
@@ -42,6 +44,18 @@ public class Enemy {
         DoT = doT;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean hasKey(){
+        return this.key;
+    }
+
     public void changeHealth(int attack) {
         double damageMultiplier = 100.0 / (100 + this.defence);
         this.health -= (int) (attack * damageMultiplier);
@@ -50,5 +64,17 @@ public class Enemy {
             this.health = 0;
         }
     }
+
+    public void statsEnemy() {
+        System.out.println("--- " + this.name + " ---");
+        System.out.println("Salute: " + this.health + "/" + this.maxHealth);
+        System.out.println("Difesa: " + this.defence);
+        System.out.println("Mana: " + this.mana + "/" + this.maxMana);
+    }
+
+    public boolean isAlive() {
+        return this.health > 0;
+    }
+
 
 }

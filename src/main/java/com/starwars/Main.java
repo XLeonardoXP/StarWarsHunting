@@ -70,8 +70,8 @@ public class Main {
 
         boolean playing = true;
         Player player = new Player();
-        Rebel rebel1_1 = new Rebel();
-        Jedi jedi1_1 = new Jedi();
+        Rebel rebel1_1 = new Rebel("Soldato Ribelle", true);
+        Jedi jedi1_1 = new Jedi("Obi Wan Kenobi", false);
 
         //Creating rooms
         Room room1_1 = new Room("Hangar Principale", "L'imponente ponte d'attacco dello Star Destroyer. La tua navetta di classe Lambda è appena atterrata. Allarmi rossi lampeggiano sulle pareti in acciaio profondo.");
@@ -107,7 +107,7 @@ public class Main {
         System.out.println(room1_1.getDescription());
 
 
-        while(playing){
+        while (playing && player.isAlive()) {
 
             System.out.print("\nCosa vuoi fare? (es. 'nord', 'sud', 'esci'): ");
             String input = scanner.nextLine().trim().toLowerCase();
@@ -118,14 +118,18 @@ public class Main {
             } else {
                 // Tenta il movimento nella direzione digitata
                 player.move(input);
+
+                // Se si è spostato in una stanza con nemici, avvia il combattimento
+                if (player.getCurrentRoom().hasEnemy()) {
+                    int count_enemies = player.getCurrentRoom().getEnemy().size();
+                    System.out.println("Attenzione! Ci sono " + count_enemies + " nemici presenti!");
+
+                    // Avvia il loop del combattimento
+                    BattleManager.startCombat(player, scanner);
+                }
             }
         }
 
-        Room armeria = new Room("Armeria", "La stanza dove vengono depositate le armi degli stormtroopers.");
-        Room riunioni = new Room("Riunioni", "La stanza dove vengono depositate le armi degli stormtroopers.");
-        Jedi luke = new Jedi();
-        armeria.setEnemy(luke);
-        armeria.setExits("nord", riunioni);
 
 
     }

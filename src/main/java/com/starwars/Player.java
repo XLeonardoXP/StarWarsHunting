@@ -10,6 +10,7 @@ public class Player {
     private int maxMana;
     private int speed;
     private Room currentRoom;
+    private boolean key;
 
     public Player(){
         this.health = 100;
@@ -48,10 +49,29 @@ public class Player {
         this.health = health;
     }
 
+    public boolean hasKey(){
+        return key;
+    }
+
+    public void setKey(){
+        this.key = true;
+    }
+
+    public void useKey(){
+        this.key = false;
+    }
+
     public void useMana(int mana) {
         this.mana = this.mana - mana;
         if(this.mana < 0){
             this.mana = 0;
+        }
+    }
+
+    public void regainMana(){
+        this.mana += 10;
+        if(this.mana > this.maxMana){
+            this.mana = this.maxMana;
         }
     }
 
@@ -71,7 +91,7 @@ public class Player {
         switch(ability){
             //Fendente pesante
             case 1:
-                useMana(10);
+                regainMana();
                 en.changeHealth(20);
                 break;
             //Force crush
@@ -89,6 +109,18 @@ public class Player {
         }
     }
 
+    public void takeDamage(int attack) {
+        double damageMultiplier = 100.0 / (100 + this.defence);
+        int finalDamage = (int) (attack * damageMultiplier);
+        this.health -= finalDamage;
+        if (this.health < 0) this.health = 0;
+        System.out.println("Darth Vader subisce " + finalDamage + " danni! (Salute: " + this.health + "/" + this.maxHealth + ")");
+    }
+
+    public boolean isAlive() {
+        return this.health > 0;
+    }
+
     public void move(String direction){
         Room nextRoom = this.currentRoom.getExit(direction);
 
@@ -96,16 +128,21 @@ public class Player {
             System.out.println("Non puoi andare in quella direzione");
         }
         else if(nextRoom.isLocked()){
-            System.out.println("Porta sbarrata. Devi trovare un altro modo per entrare.");
+            System.out.println("Porta sbarrata.");
+            if(this.key){
+                System.out.println("Hai usato la chiave per aprire la porta.");
+                this.key = false;
+                this.currentRoom.setLocked(false);
+
+                setCurrentRoom(nextRoom);
+                System.out.println("Ti sei spostato in: "+this.currentRoom.getName());
+                System.out.println(this.currentRoom.getDescription());
+            }
         }
         else{
             setCurrentRoom(nextRoom);
             System.out.println("Ti sei spostato in: "+this.currentRoom.getName());
             System.out.println(this.currentRoom.getDescription());
-        }
-
-        if(this.currentRoom.hasEnemy()){
-            System.out.println("Attenzione! Ci sono nemici in questa stanza.");
         }
     }
 }
